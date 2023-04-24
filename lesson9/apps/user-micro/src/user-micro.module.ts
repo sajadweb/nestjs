@@ -4,7 +4,7 @@ import { UserMicroService } from './user-micro.service';
 import { MongoConfigAsync, getEnvironments } from '@libs/common';
 
 @Module({
-  imports: [getEnvironments('.env.user'), MongoConfigAsync],
+  imports: [getEnvironments('.env'), MongoConfigAsync],
   controllers: [UserMicroController],
   providers: [UserMicroService],
 })

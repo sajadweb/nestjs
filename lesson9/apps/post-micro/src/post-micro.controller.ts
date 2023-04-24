@@ -1,3 +1,4 @@
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { Controller, Get } from '@nestjs/common';
 import { PostMicroService } from './post-micro.service';
 
@@ -5,8 +6,8 @@ import { PostMicroService } from './post-micro.service';
 export class PostMicroController {
   constructor(private readonly postMicroService: PostMicroService) {}
 
-  @Get()
-  getHello(): string {
-    return this.postMicroService.getHello();
+  @MessagePattern('get.hello')
+  getHello(@Payload() payload: any): string {
+    return this.postMicroService.getHello(payload);
   }
 }

@@ -1,16 +1,19 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto, LoginUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from '@libs/schema';
 import * as bcrypt from 'bcrypt';
+import { ClientProxy } from '@nestjs/microservices';
+import { lastValueFrom, map } from 'rxjs';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
     private users: Model<UserDocument>,
+    @Inject('UserProxyService') private client: ClientProxy,
   ) {}
   async login(loginBody: LoginUserDto) {
     const user = await this.users
@@ -55,6 +58,28 @@ export class UserService {
     );
   }
 
+  async getHello() {
+    try {
+      return lastValueFrom(
+        this.client.send('get.hello', { name: 'user micro' }).pipe(
+          map((res) => {
+            return res;
+          }),
+        ),
+      );
+    } catch (error) {
+      return 'Error';
+    }
+  }
+  async pingCheck() {
+    try {
+      await this.client.connect();
+      return 'ok';
+    } catch (error) {
+      console.log(error);
+      return 'Error';
+    }
+  }
   async findOne(id: any) {
     const user = await this.users.findById(id);
     if (!user) {

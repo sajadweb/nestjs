@@ -4,7 +4,7 @@ import { PostMicroService } from './post-micro.service';
 import { MongoConfigAsync, getEnvironments } from '@libs/common';
 
 @Module({
-  imports: [getEnvironments('.env.post'), MongoConfigAsync],
+  imports: [getEnvironments('.env'), MongoConfigAsync],
   controllers: [PostMicroController],
   providers: [PostMicroService],
 })

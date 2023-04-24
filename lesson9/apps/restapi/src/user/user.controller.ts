@@ -35,6 +35,10 @@ export class UserController {
   findAll() {
     return this.userService.findAll();
   }
+  @Get('hello')
+  getHello() {
+    return this.userService.getHello();
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

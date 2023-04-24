@@ -3,10 +3,22 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { UserFeature } from '@libs/schema';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
+import { ClientProxyFactory } from '@nestjs/microservices';
+import { UserMicroConfig } from '@libs/common';
 
 @Module({
   imports: [MongooseModule.forFeature([UserFeature])],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [
+    UserService,
+    {
+      provide: 'UserProxyService',
+      inject: [ConfigService],
+      useFactory: async () => {
+        return ClientProxyFactory.create(UserMicroConfig());
+      },
+    },
+  ],
 })
 export class UserModule {}
